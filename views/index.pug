@@ -1,0 +1,7 @@
+extends layout.pug
+//- Declares the file is extending from layout dot pug 
+//- block content tells the template to injext the content in the content block 
+block content
+  h2 Welcome: #{name}!
+  form(action="/goodbye" method="post")
+    button(type="submit") Log Out
