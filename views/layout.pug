@@ -2,12 +2,10 @@ doctype html
 html(lang="en")
   head
     title Flash Cards
+    //-Because the static server is set up the public folder's content is at /static. Any pathc in the folder will be available to static
+    link(rel='stylesheet', href='/static/stylesheets/style.css')
   body
     //- use include keyword then the path to the file
     include includes/header.pug
-    if name
-      h2 Welcome, #{name}!
-      form(action="/goodbye" method="post")
-        button(type="submit") Goodbye
-    block content    
-    include includes/footer.pug  
+    block main  
+      

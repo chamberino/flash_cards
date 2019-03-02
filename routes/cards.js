@@ -34,7 +34,7 @@ router.get('/:id', (req, res) => {
   // Using destructing, hint becomes a new constant and also stores the value of hint from the passed in value of cards[id]. It's the equivalent of writing hint = cards.x.hint
   const { hint } = cards[id];
   // Holds an object with two key value pairs, text and hint
-  const templateData = { name, id, text };
+  const templateData = { name, id, text, side };
     if (side ==='question') {
       templateData.hint = hint;
       templateData.sideToShow = 'answer';
