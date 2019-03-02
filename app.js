@@ -13,10 +13,21 @@ const app = express();
 // So we'll use the urlencodeparser
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser());
+app.use(express.static('public'));
 // Using set method to set the view engine to the parameter 'pug'.
 // The app.set method defines different settings in Express.
 // This line tells Express which template engine to use.
 app.set('view engine', 'pug');
+
+
+// Import routes so it can be accessed here in app.js. No need to refer to /index.js path because index.js after ./routes because it is default path
+const mainRoutes = require('./routes');
+const cardRoutes = require('./routes/cards')
+
+//Use mainRoutes variable to make middleware
+app.use(mainRoutes);
+//add a new cards routes path
+app.use('/cards', cardRoutes);
 
 app.use((req, res, next) => {
   req.message = 'This message made it!';
@@ -31,59 +42,6 @@ app.use((req, res, next) => {
   console.log(req.message);
   next();
 })
-
-//The response object looks for the pug file because it is set in the view engine
-app.get('/', (req, res) => {
-  //- The response object's render method is used to turn templates into HTML
-  //- put username in a variable
-  const name = req.cookies.username;
-  // If name exists, render the index template, else redirect to 'hello' form page
-  if (name) {
-    // Because key/value are the same, name is written once (ES6 shorthand)
-    res.render('index', { name });
-  } else {
-    res.redirect('/hello')
-  }
-});
-
-// The first parameter of the get method is the location relative to the root folder
-// The get method also gets passed a request and response object
-app.get('/cards', (req, res) => {
-  // locals hold the variables accessible to the cards page;
-  // res.locals.prompt = "Who is buried in Grant's tomb?";
-  // renders the contents of card.pug
-  res.render('card', { prompt: "Who is buried in Grant's tomb?", hint: "Think about whose tomb it is." })
-});
-
-// Create a new route with a new template
-  app.get('/sandbox', (req, res) => {
-    res.render('sandbox', {firstName: "Michael"})
-  });
-
-// Create a new route to a form page
-  app.get('/hello', (req, res) => {
-    const name = req.cookies.username;
-    // If name exists redirect to index. If not, allow 'hello' form to render
-    if (name) {
-      res.redirect('/');
-    } else {
-      res.render('hello');
-    }
-  });
-//Create a post route to handle form submission
-app.post('/hello', (req, res) => {
-  //- Send a cookie. Cookie method accepts two parameters. Name of the cookie and the value.
-  res.cookie('username', req.body.username);
-  //- The second parameter declares the name variable so we can work with the captured response of the username input
-  res.redirect('/')
-});
-
-// Create a new route called goodbye for the log out form to post to
-  app.post('/goodbye', (req, res) => {
-    //clear cookie then redirect to 'hello' form login page
-    res.clearCookie('username', req.body.username);
-    res.redirect('/hello')
-  });
 
   app.use((req, res, next) => {
     const err = new Error('Not Found');
